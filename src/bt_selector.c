@@ -78,14 +78,15 @@ HAPI void bt_selector_layout_create(appdata_s *ad)
 	const Eina_List *color_list;
 
 	colorselector = elm_colorselector_add(ad->navi);
-	//elm_colorselector_mode_set(colorselector, ELM_COLORSELECTOR_PALETTE);
-	elm_colorselector_mode_set(colorselector, ELM_COLORSELECTOR_ALL);
+	elm_colorselector_mode_set(colorselector, ELM_COLORSELECTOR_PALETTE);
+	//elm_colorselector_mode_set(colorselector, ELM_COLORSELECTOR_ALL);
 	evas_object_size_hint_fill_set(colorselector, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
 	color_list = elm_colorselector_palette_items_get(colorselector);
 	it = eina_list_nth(color_list, 0);
 
-	elm_object_item_signal_emit(it, "elm,state,selected", "elm");
+	// no default selection, because this send "white" to the device
+	//elm_object_item_signal_emit(it, "elm,state,selected", "elm");
 	evas_object_smart_callback_add(colorselector, "color,item,selected", colorselector_cb, ad);
 
 	bt_socket_set_data_received_cb(_socket_data_received_cb, NULL);

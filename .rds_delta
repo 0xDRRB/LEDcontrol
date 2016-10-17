@@ -4,3 +4,5 @@
 author-signature.xml
 signature1.xml
 bin/ledcontrol
+res/edje/bt_chat.edj
+res/edje/bt_wait.edj
