@@ -2,6 +2,8 @@
 *.edj
 *.swp
 Session.vim
+.sdk_delta.info
+.rds_delta
 .sign/
 Build/
 Debug/
