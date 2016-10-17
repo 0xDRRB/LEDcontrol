@@ -2,22 +2,7 @@
 #include "bt_mgr.h"
 #include "bt_selector.h"
 
-static void _socket_conn_state_changed_cb(int result, bt_socket_connection_state_e connection_state, bt_socket_connection_s *connection, void *user_data)
-{
-	appdata_s *ad = NULL;
-
-	ad = (appdata_s *) user_data;
-	ret_if(!ad);
-	ret_if(result != BT_ERROR_NONE);
-
-	_D("[_socket_conn_state_changed_cb] Changed");
-	if (connection_state == BT_SOCKET_DISCONNECTED) {
-		_I("[_socket_conn_state_changed_cb] Disconnected");
-		ad->socket_fd = -1;
-		notification_status_message_post("LEDcontrol: Disconnected");
-	}
-}
-
+// for tomorow...
 static void _socket_data_received_cb(bt_socket_received_data_s *data, void *user_data)
 {
 	char *message = NULL;
@@ -66,10 +51,14 @@ colorselector_cb(void *data, Evas_Object *obj, void *event_info)
    }
 }
 
+static void _on_colorselector_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	// cleanup other objects here
+	_D("Colorselector deleted");
+}
+
 HAPI void bt_selector_layout_create(appdata_s *ad)
 {
-	int ret = -1;
-
 	ret_if(!ad);
 	ret_if(!ad->navi);
 
@@ -91,11 +80,6 @@ HAPI void bt_selector_layout_create(appdata_s *ad)
 
 	bt_socket_set_data_received_cb(_socket_data_received_cb, NULL);
 
-	ret = bt_socket_unset_connection_state_changed_cb();
-	ret_if(ret != BT_ERROR_NONE);
-
-	ret = bt_socket_set_connection_state_changed_cb(_socket_conn_state_changed_cb, ad);
-	ret_if(ret != BT_ERROR_NONE);
-
+	evas_object_event_callback_add(colorselector, EVAS_CALLBACK_DEL, _on_colorselector_del_cb, NULL);
 	elm_naviframe_item_push(ad->navi, "Choose color", NULL, NULL, colorselector, NULL);
 }
