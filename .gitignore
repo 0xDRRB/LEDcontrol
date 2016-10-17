@@ -1,0 +1,8 @@
+*~
+*.edj
+*.swp
+Session.vim
+.sign/
+Build/
+Debug/
+SA_Report/
