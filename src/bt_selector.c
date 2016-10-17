@@ -40,7 +40,7 @@ colorselector_cb(void *data, Evas_Object *obj, void *event_info)
 {
    int r, g, b, a;
    int ret = 0;
-   //const char *message = NULL;
+   char message[6] = {0, 0, 0, 0, 0, 59};
 
    appdata_s *ad = (appdata_s *) data;
    ret_if(!ad);
@@ -51,13 +51,19 @@ colorselector_cb(void *data, Evas_Object *obj, void *event_info)
    evas_color_argb_premul(a, &r, &g, &b);
    _D("Color changed to (RGBA): %d %d %d %d", r, g, b, a);
 
-   /*
-   ret = bt_socket_send_data(ad->socket_fd, message, strlen(message) + 1);
+   // format : "00rgb;"
+   message[2]=r;
+   message[3]=g;
+   message[4]=b;
+
+   ret = bt_socket_send_data(ad->socket_fd, message, 6);
    if (ret == -1) {
-   		_E("[bt_socket_send_data] Fail to send: %s", message);
+   		_E("[bt_socket_send_data] Fail to send");
    		notification_status_message_post("LEDcontrol: Send failed");
+   } else {
+	    _D("[bt_socket_send_data] Send OK (data= %u %u %u %u %u %c)",
+			   message[0], message[1], message[2], message[3], message[4], message[5]);
    }
-   */
 }
 
 HAPI void bt_selector_layout_create(appdata_s *ad)
@@ -69,7 +75,7 @@ HAPI void bt_selector_layout_create(appdata_s *ad)
 
 	Evas_Object *colorselector;
 	Elm_Object_Item *it;
-	Eina_List *color_list;
+	const Eina_List *color_list;
 
 	colorselector = elm_colorselector_add(ad->navi);
 	//elm_colorselector_mode_set(colorselector, ELM_COLORSELECTOR_PALETTE);
