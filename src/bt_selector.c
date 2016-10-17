@@ -46,7 +46,7 @@ colorselector_cb(void *data, Evas_Object *obj, void *event_info)
    		_E("[bt_socket_send_data] Fail to send");
    		notification_status_message_post("LEDcontrol: Send failed");
    } else {
-	    _D("[bt_socket_send_data] Send OK (data= %u %u %u %u %u %c)",
+	    _D("Send OK (data= %u %u %u %u %u %c)",
 			   message[0], message[1], message[2], message[3], message[4], message[5]);
    }
 }

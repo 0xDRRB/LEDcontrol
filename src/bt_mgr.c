@@ -56,12 +56,9 @@ static void _socket_conn_state_changed_cb(int result, bt_socket_connection_state
 			_D("No connection data");
 		}
 	} else if (connection_state == BT_SOCKET_DISCONNECTED) {
-		_D("[_socket_conn_state_changed_cb] Disconnected");
+		_D("Disconnected");
 		ad->socket_fd = -1;
 		notification_status_message_post("LEDcontrol: Disconnected");
-	} else {
-		ad->socket_fd = -1;
-		_D("Disconnected");
 	}
 }
 
