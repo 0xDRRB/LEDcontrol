@@ -7,4 +7,5 @@ Session.vim
 .sign/
 Build/
 Debug/
+Release/
 SA_Report/
