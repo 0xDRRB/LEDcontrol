@@ -3,7 +3,7 @@
     <profile name="mobile"/>
     <ui-application appid="org.dbodor.LEDcontrol" exec="ledcontrol" multiple="false" nodisplay="false" taskmanage="true" type="capp">
         <label>LEDcontrol</label>
-        <icon>bluetoothchat2.png</icon>
+        <icon>LEDcontrol.png</icon>
     </ui-application>
     <privileges>
         <privilege>http://tizen.org/privilege/appmanager.launch</privilege>
