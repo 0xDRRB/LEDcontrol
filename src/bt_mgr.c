@@ -88,7 +88,6 @@ ERROR:
 
 static void _click_device_item_cb(void *data, Evas_Object *obj, void *event_info)
 {
-	//Evas_Object *noti = NULL;
 	Elm_Object_Item *item = NULL;
 	bt_device_info_s *info = NULL;
 	bt_error_e ret = BT_ERROR_NONE;
@@ -99,10 +98,10 @@ static void _click_device_item_cb(void *data, Evas_Object *obj, void *event_info
 	ret_if(!info);
 	s_info.info = info;
 
-	item = elm_list_selected_item_get(obj);
+	item = elm_genlist_selected_item_get(obj);
 	ret_if(!item);
 
-	elm_list_item_selected_set(item, EINA_FALSE);
+	elm_genlist_item_selected_set(item, EINA_FALSE);
 
 	ret = bt_socket_connect_rfcomm(info->remote_address, BT_MGR_UUID);
 	if (ret != BT_ERROR_NONE) {
@@ -112,11 +111,23 @@ static void _click_device_item_cb(void *data, Evas_Object *obj, void *event_info
 	_connect_layout_create();
 }
 
+static char* _genlist_text_get_cb(void *data, Evas_Object *obj, const char *part)
+{
+	bt_device_info_s *device_info = (bt_device_info_s *) data;
+
+	if (!strcmp("elm.text", part))
+		return strdup(device_info->remote_name);
+	else if (!strcmp("elm.text.sub", part))
+		return strdup(device_info->remote_address);
+	else return NULL;
+}
+
 static bool _list_bonded_cb(bt_device_info_s *device_info, void *user_data) {
-	appdata_s *ad = (appdata_s *) user_data;
 	bt_device_info_s *new_device_info = NULL;
 
-	if(!ad) return FALSE;
+	Elm_Genlist_Item_Class *itc = (Elm_Genlist_Item_Class *) user_data;
+	if(!itc) return FALSE;
+
 	if(!s_info.list) return FALSE;
 
 	if (device_info != NULL && s_info.list != NULL) {
@@ -127,8 +138,14 @@ static bool _list_bonded_cb(bt_device_info_s *device_info, void *user_data) {
 			memcpy(new_device_info, device_info, sizeof(bt_device_info_s));
 			new_device_info->remote_address = strdup(device_info->remote_address);
 			new_device_info->remote_name = strdup(device_info->remote_name);
-			elm_list_item_append(s_info.list, new_device_info->remote_name, NULL, NULL, _click_device_item_cb, new_device_info);
-			elm_list_go(s_info.list);
+
+			elm_genlist_item_append(s_info.list,
+					itc,  // item class
+					new_device_info,   // item class user data
+					NULL,
+					ELM_GENLIST_ITEM_NONE, // item type
+					_click_device_item_cb, // select smart callback
+					new_device_info);  // smart callback user data
 		}
 	}
 
@@ -145,18 +162,23 @@ static void _search_layout_create(appdata_s *ad)
 	ad->role = BT_SOCKET_CLIENT;
 
 	s_info.navi = ad->navi;
-	s_info.list = elm_list_add(ad->navi);  // no choice, can't pass *bt_device_info_s and *ad with _click_device_item_cb
+
+	Elm_Genlist_Item_Class *itc = NULL;
+	itc = elm_genlist_item_class_new();
+	itc->item_style = "type1";
+	itc->func.content_get = NULL;
+	itc->func.text_get = _genlist_text_get_cb;  // CB text + part, text or subtext
+	s_info.list = elm_genlist_add(ad->navi);
 	ret_if(!s_info.list);
 
 	evas_object_size_hint_weight_set(s_info.list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(s_info.list, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	elm_list_go(s_info.list);
 	elm_naviframe_item_push(ad->navi, "Paired Device(s)", NULL, NULL, s_info.list, NULL);
 
 	ret = bt_socket_set_connection_state_changed_cb(_socket_conn_state_changed_cb, ad);
 	ret_if(ret != BT_ERROR_NONE);
 
-	 bt_adapter_foreach_bonded_device(_list_bonded_cb, ad);
+	bt_adapter_foreach_bonded_device(_list_bonded_cb, itc);
 }
 
 static void _onoff_operation(void)
