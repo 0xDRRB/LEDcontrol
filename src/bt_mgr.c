@@ -138,12 +138,11 @@ static bool _list_bonded_cb(bt_device_info_s *device_info, void *user_data) {
 			new_device_info->remote_address = strdup(device_info->remote_address);
 			new_device_info->remote_name = strdup(device_info->remote_name);
 
-			/*
-			_D(">>>> %s (%s)", device_info->remote_name, device_info->remote_address );
+			_D("Paired device : %s  %s", device_info->remote_address, device_info->remote_name );
+			_D("  %u service(s) with UUID :", device_info->service_count);
 			for(int i=0; i < device_info->service_count; i++) {
-				_D(">> %s", device_info->service_uuid[i]);
+				_D("    %u: %s", i, device_info->service_uuid[i]);
 			}
-			*/
 
 			elm_genlist_item_append(s_info.list,
 					itc,  // item class
