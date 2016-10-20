@@ -1,4 +1,4 @@
-#include "bt_chat.h"
+#include "bt_main.h"
 #include "bt_mgr.h"
 #include "bt_selector.h"
 

@@ -1,6 +1,6 @@
 #include <bluetooth.h>
 
-#include "bt_chat.h"
+#include "bt_main.h"
 #include "bt_mgr.h"
 
 static void _search_btn_clicked_cb(void *data)

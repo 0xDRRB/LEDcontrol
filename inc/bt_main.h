@@ -17,7 +17,7 @@
 #define PACKAGE "$(packageName)"
 #endif
 
-#define EDJ_FILE "edje/bt_chat.edj"
+#define EDJ_FILE "edje/bt_main.edj"
 #define EDJ_WAIT "edje/bt_wait.edj"
 #define GRP_MAIN "main"
 
