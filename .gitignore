@@ -6,6 +6,7 @@ Session.vim
 .rds_delta
 .sign/
 Build/
+crash-info/
 Debug/
 Release/
 SA_Report/

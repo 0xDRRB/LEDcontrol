@@ -7,7 +7,7 @@ static void _search_btn_clicked_cb(void *data)
 {
 	ret_if(!data);
 
-	bt_mgr_initialize(data, BT_MGR_SEARCH);
+	bt_mgr_initialize(data);
 }
 
 static void _win_delete_request_cb(void *data, Evas_Object *obj, void *event_info)

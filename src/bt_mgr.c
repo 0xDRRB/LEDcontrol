@@ -103,7 +103,7 @@ static void _click_device_item_cb(void *data, Evas_Object *obj, void *event_info
 
 	elm_genlist_item_selected_set(item, EINA_FALSE);
 
-	ret = bt_socket_connect_rfcomm(info->remote_address, BT_MGR_UUID);
+	ret = bt_socket_connect_rfcomm(info->remote_address, BT_MGR_UUID); // always try to connect to SPP UUID
 	if (ret != BT_ERROR_NONE) {
 		_E("[bt_socket_listen_and_accept_rfcomm] Failed");
 	}
@@ -119,6 +119,7 @@ static char* _genlist_text_get_cb(void *data, Evas_Object *obj, const char *part
 		return strdup(device_info->remote_name);
 	else if (!strcmp("elm.text.sub", part))
 		return strdup(device_info->remote_address);
+
 	else return NULL;
 }
 
@@ -133,11 +134,16 @@ static bool _list_bonded_cb(bt_device_info_s *device_info, void *user_data) {
 	if (device_info != NULL && s_info.list != NULL) {
 		new_device_info = malloc(sizeof(bt_device_info_s));
 		if (new_device_info != NULL) {
-			_D("Device Name is: %s", device_info->remote_name);
-
 			memcpy(new_device_info, device_info, sizeof(bt_device_info_s));
 			new_device_info->remote_address = strdup(device_info->remote_address);
 			new_device_info->remote_name = strdup(device_info->remote_name);
+
+			/*
+			_D(">>>> %s (%s)", device_info->remote_name, device_info->remote_address );
+			for(int i=0; i < device_info->service_count; i++) {
+				_D(">> %s", device_info->service_uuid[i]);
+			}
+			*/
 
 			elm_genlist_item_append(s_info.list,
 					itc,  // item class
@@ -199,7 +205,7 @@ static void _onoff_operation(void)
 	app_control_destroy(service);
 }
 
-HAPI void bt_mgr_initialize(void *data, bt_mgr_type type)
+HAPI void bt_mgr_initialize(void *data)
 {
 	appdata_s *ad = NULL;
 	bt_adapter_state_e bt_ad_state = BT_ADAPTER_DISABLED;
@@ -217,9 +223,7 @@ HAPI void bt_mgr_initialize(void *data, bt_mgr_type type)
 	if (bt_ad_state == BT_ADAPTER_DISABLED) {
 		_onoff_operation();
 	} else {
-		if (type==BT_MGR_SEARCH) {
-			_search_layout_create(ad);
-		}
+		_search_layout_create(ad);
 	}
 }
 
