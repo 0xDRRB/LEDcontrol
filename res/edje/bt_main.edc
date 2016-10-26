@@ -23,6 +23,16 @@ collections {
                rel2 { relative: 0.8 0.45; to: "background"; }
             }
          }
+
+         part {
+            name: "about";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 { relative: 0.3 0.5; to: "background"; }
+               rel2 { relative: 0.7 0.65; to: "background"; }
+            }
+         }
       }
    }
 }

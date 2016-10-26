@@ -3,6 +3,84 @@
 #include "bt_main.h"
 #include "bt_mgr.h"
 
+static void popup_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Evas_Object *popup = data;
+	evas_object_del(popup);
+}
+
+static void _about_btn_clicked_cb(void *data)
+{
+	Evas_Object *popup;
+	Evas_Object *btn;
+
+	appdata_s *ad = (appdata_s *) data;
+	ret_if(!ad);
+
+	// popup
+	popup = elm_popup_add(ad->win);
+	elm_popup_align_set(popup, ELM_NOTIFY_ALIGN_FILL, 1.0);
+	eext_object_event_callback_add(popup, EEXT_CALLBACK_BACK, eext_popup_back_cb, ad->win);
+	evas_object_size_hint_weight_set(popup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
+	elm_object_part_text_set(popup, "title,text", "LEDcontrol by Denis Bodor");
+	elm_object_text_set(popup,
+			"This app talk with an Arduino board using a serial Bluetooth module like "
+			"HC-05 or HC-06. Each time you choose a color this app send a Bluetooth message "
+			"and the Arduino set the led color accordingly.</br></br>"
+			"Here is a sample Arduino sketch with a single ws2812b led connected to pin 9 "
+			"and Bluetooth module connected to 10 and 11:<br><br>"
+			"<font_size=25>"
+			"#include &lt;<color=#F47742FF>SoftwareSerial</color>.h&gt;</br>"
+			"#include &lt;<color=#F47742FF>Adafruit_NeoPixel</color>.h&gt;</br>"
+			"</br>"
+			"<color=#F47742FF>Adafruit_NeoPixel</color> ws = </br>"
+			"     <color=#F47742FF>Adafruit_NeoPixel</color>(1, 9, NEO_RGB + NEO_KHZ800);</br>"
+			"<color=#F47742FF>SoftwareSerial</color> btmodule(10, 11);</br>"
+			"</br>"
+			"<color=#42B9F4FF>void</color> setup() {</br>"
+			"  <color=#F47742FF>Serial.begin</color>(115200);</br>"
+			"  while (!<color=#F47742FF>Serial</color>);</br>"
+			"  btmodule.<color=#F47742FF>begin</color>(19200);</br>"
+			"  ws.<color=#F47742FF>begin</color>();</br>"
+			"  ws.<color=#F47742FF>setPixelColor</color>(0, ws.<color=#F47742FF>Color</color>(0,0,0));</br>"
+			"  ws.show();</br>"
+			"}</br>"
+			"</br>"
+			"<color=#42B9F4FF>void</color> loop() {</br>"
+			"  if (btmodule.<color=#F47742FF>available</color>()) {</br>"
+			"    <color=#42B9F4FF>String</color> commande = btmodule.<color=#F47742FF>readStringUntil</color>(';');</br>"
+			"    if(commande.<color=#F47742FF>length</color>() == 5) {</br>"
+			"      if(commande.<color=#F47742FF>charAt</color>(1) == 0x00) {</br>"
+			"        ws.<color=#F47742FF>setPixelColor</color>(0, ws.Color(commande.<color=#F47742FF>charAt</color>(2),</br>"
+			"                    commande.<color=#F47742FF>charAt</color>(3),commande.<color=#F47742FF>charAt</color>(4)));</br>"
+			"        ws.show();</br>"
+			"      }</br>"
+			"    }</br>"
+			"  }</br>"
+			"}"
+			"</font_size>"
+			"</br></br>"
+			"You can get the source code of this native app on:</br>"
+			"<font_size=30><b>https://github.com/Lefinnois/LEDcontrol</b></font_size>"
+			"<br></br>"
+			"<font_size=25>LEDcontrol version 0.0.2, Copyright (C) 2016 Denis Bodor</br>"
+    		"LEDcontrol comes with ABSOLUTELY NO WARRANTY; "
+    		"This program is free software; you can redistribute it and/or modify "
+    		"it under the terms of the GNU General Public License version 2.</font_size>");
+
+
+
+	// ok button
+	btn = elm_button_add(popup);
+	elm_object_style_set(btn, "popup");
+	elm_object_text_set(btn, "OK");
+	elm_object_part_content_set(popup, "button1", btn);
+	evas_object_smart_callback_add(btn, "clicked", popup_btn_clicked_cb, popup);
+
+	evas_object_show(popup);
+}
+
 static void _search_btn_clicked_cb(void *data)
 {
 	ret_if(!data);
@@ -71,6 +149,7 @@ static void _create_base_gui(appdata_s *ad)
 	Evas_Object *bg = NULL;
 	Evas_Object *layout = NULL;
 	Evas_Object *search_btn = NULL;
+	Evas_Object *about_btn = NULL;
 	char edj_path[PATH_MAX] = { 0, };
 
 	ad->socket_fd = -1;
@@ -125,6 +204,13 @@ static void _create_base_gui(appdata_s *ad)
 	elm_object_text_set(search_btn, "Choose Device");
 	evas_object_smart_callback_add(search_btn, "clicked", (Evas_Smart_Cb) _search_btn_clicked_cb, (void *) ad);
 	elm_object_part_content_set(layout, "search", search_btn);
+
+	about_btn = elm_button_add(layout);
+	goto_if(!about_btn, ERROR);
+	elm_object_text_set(about_btn, "About");
+	evas_object_smart_callback_add(about_btn, "clicked", (Evas_Smart_Cb) _about_btn_clicked_cb, (void *) ad);
+	elm_object_part_content_set(layout, "about", about_btn);
+
 
 	/* Push Main Layout to Naviframe */
 	elm_naviframe_item_push(ad->navi, "LEDcontrol", NULL, NULL, layout, NULL);
