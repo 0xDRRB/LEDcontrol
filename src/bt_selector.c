@@ -20,21 +20,15 @@ ERROR:
 	return;
 }
 
-static void
-colorselector_cb(void *data, Evas_Object *obj, void *event_info)
+static void send_color_bt(appdata_s *ad, int r, int g, int b)
 {
-   int r, g, b, a;
    int ret = 0;
    char message[6] = {0, 0, 0, 0, 0, 59};
 
-   appdata_s *ad = (appdata_s *) data;
+   //appdata_s *ad = (appdata_s *) data;
    ret_if(!ad);
 
-   Elm_Object_Item *color_it = (Elm_Object_Item *) event_info;
-
-   elm_colorselector_palette_item_color_get(color_it, &r, &g, &b, &a);
-   evas_color_argb_premul(a, &r, &g, &b);
-   _D("Color changed to (RGBA): %d %d %d %d", r, g, b, a);
+   _D("Color changed to (RGB): %u %u %u", r, g, b);
 
    // format : "00rgb;"
    message[2]=r;
@@ -51,35 +45,138 @@ colorselector_cb(void *data, Evas_Object *obj, void *event_info)
    }
 }
 
-static void _on_colorselector_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+void hsv2rgb(double h, double s, double v, int *r, int *g, int *b)
 {
-	// cleanup other objects here
-	_D("Colorselector deleted");
+    double      hh, p, q, t, ff;
+    long        i;
+
+    if(s <= 0.0) {
+        *r = v*255; *g = v*255; *b = v*255;
+        return;
+    }
+
+    hh = h;
+    if(hh >= 360.0) hh = 0.0;
+    hh /= 60.0;
+    i = (long)hh;
+    ff = hh - i;
+    p = v * (1.0 - s);
+    q = v * (1.0 - (s * ff));
+    t = v * (1.0 - (s * (1.0 - ff)));
+
+    switch(i) {
+      case 0:
+        *r = v*255; *g = t*255; *b = p*255;
+        break;
+      case 1:
+        *r = q*255; *g = v*255; *b = p*255;
+        break;
+      case 2:
+        *r = p*255; *g = v*255; *b = t*255;
+        break;
+      case 3:
+        *r = p*255; *g = q*255; *b = v*255;
+        break;
+      case 4:
+        *r = t*255; *g = p*255; *b = v*255;
+        break;
+      case 5:
+      default:
+        *r = v*255; *g = p*255; *b = q*255;
+        break;
+    }
+    return;
+}
+
+static void _on_knob_moved(void *data, Evas_Object *o, const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
+{
+   double hue, val, sat ;
+   int r, g, b;
+
+   appdata_s *ad = (appdata_s *) data;
+   ret_if(!ad);
+
+   // get dragable position
+   edje_object_part_drag_value_get(o, "b_hue", NULL, &hue);
+   hue = hue*360;
+   edje_object_part_drag_value_get(o, "b_sat", NULL, &sat);
+   sat = 1 - sat;
+   edje_object_part_drag_value_get(o, "b_val", NULL, &val);
+   val = 1 - val;
+
+   // set value slider color
+   hsv2rgb(hue, sat, 1.0, &r, &g, &b);
+   edje_color_class_set("valcolor", r, g, b, 255,     255, 0, 0, 255, 255, 0, 0, 255);
+
+   // set saturation slider colors
+   hsv2rgb(hue, 1.0, val, &r, &g, &b);
+   edje_color_class_set("basecolor", r, g, b, 255,     255, 0, 0, 255, 255, 0, 0, 255);
+   hsv2rgb(hue, 0.0, val, &r, &g, &b);
+   edje_color_class_set("satcolor", r, g, b, 255,     255, 0, 0, 255, 255, 0, 0, 255);
+
+   // set final color RECT
+   hsv2rgb(hue, sat, val, &r, &g, &b);
+   edje_color_class_set("finalcolor", r, g, b, 255,     255, 0, 0, 255, 255, 0, 0, 255);
+
+   // send color by bluetooth here
+}
+
+static void _on_knob_release(void *data, Evas_Object *o, const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
+{
+   double hue, val, sat ;
+   int r, g, b;
+
+   appdata_s *ad = (appdata_s *) data;
+   ret_if(!ad);
+
+   edje_object_part_drag_value_get(o, "b_hue", NULL, &hue);
+   //_D("value changed to: %0.3f", val);
+   hue = hue*360;
+
+   edje_object_part_drag_value_get(o, "b_sat", NULL, &sat);
+   sat = 1 - sat;
+
+   edje_object_part_drag_value_get(o, "b_val", NULL, &val);
+   val = 1 - val;
+
+   hsv2rgb(hue, sat, val, &r, &g, &b);
+
+   // send color by bluetooth here
+   _D(">>>>>> value changed. hsv = %0.3f %0.3f %0.3f    rgb = %u %u %u", hue, sat, val, r, g, b);
+
+   send_color_bt(ad, r, g, b);
 }
 
 HAPI void bt_selector_layout_create(appdata_s *ad)
 {
+	Evas_Object *edje_object;
+	char edj_path[PATH_MAX] = { 0, };
+
 	ret_if(!ad);
+	ret_if(!ad->win);
 	ret_if(!ad->navi);
 
-	Evas_Object *colorselector;
-	Elm_Object_Item *it;
-	const Eina_List *color_list;
+	// Create the content
+	// find path
+	app_resource_get("edje/colorpicker.edj", edj_path, (int)PATH_MAX);
+	// create objet
+	edje_object = edje_object_add(evas_object_evas_get(ad->win));
+	// load edje data
+	edje_object_file_set(edje_object, edj_path, "main");
+	// adjust hint
+	evas_object_size_hint_weight_set(edje_object, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+	// set callbacks fnct on dragables part
+	edje_object_signal_callback_add(edje_object, "mouse,up,*", "b_hue", _on_knob_release, ad);
+	edje_object_signal_callback_add(edje_object, "drag", "b_hue", _on_knob_moved, ad);
+	edje_object_signal_callback_add(edje_object, "mouse,up,*", "b_sat", _on_knob_release, ad);
+	edje_object_signal_callback_add(edje_object, "drag", "b_sat", _on_knob_moved, ad);
+	edje_object_signal_callback_add(edje_object, "mouse,up,*", "b_val", _on_knob_release, ad);
+	edje_object_signal_callback_add(edje_object, "drag", "b_val", _on_knob_moved, ad);
+	//elm_naviframe_item_simple_push(ad->naviframe, edje_object);
 
-	colorselector = elm_colorselector_add(ad->navi);
-	elm_colorselector_mode_set(colorselector, ELM_COLORSELECTOR_PALETTE);
-	//elm_colorselector_mode_set(colorselector, ELM_COLORSELECTOR_ALL);
-	evas_object_size_hint_fill_set(colorselector, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	// push objet on the naviframe stack
+	elm_naviframe_item_push(ad->navi, "Choose color", NULL, NULL, edje_object, NULL);
 
-	color_list = elm_colorselector_palette_items_get(colorselector);
-	it = eina_list_nth(color_list, 0);
-
-	// no default selection, because this send "white" to the device
-	//elm_object_item_signal_emit(it, "elm,state,selected", "elm");
-	evas_object_smart_callback_add(colorselector, "color,item,selected", colorselector_cb, ad);
-
+	// TODO
 	bt_socket_set_data_received_cb(_socket_data_received_cb, NULL);
-
-	evas_object_event_callback_add(colorselector, EVAS_CALLBACK_DEL, _on_colorselector_del_cb, NULL);
-	elm_naviframe_item_push(ad->navi, "Choose color", NULL, NULL, colorselector, NULL);
 }

@@ -12,7 +12,6 @@
 		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
-			<triggers>clean,full,incremental,</triggers>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -32,7 +31,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>0</id>
+			<id>1477477035827</id>
 			<name></name>
 			<type>26</type>
 			<matcher>
@@ -41,7 +40,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>0</id>
+			<id>1477477035850</id>
 			<name></name>
 			<type>6</type>
 			<matcher>

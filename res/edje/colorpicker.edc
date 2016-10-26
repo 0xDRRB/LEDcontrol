@@ -1,0 +1,303 @@
+color_classes {
+   color_class {
+      name: "basecolor";
+      color: 255 0 0 255;
+      color2: 255 255 255 255; // for text
+      color3: 255 255 255 255; // useless here
+   }
+   color_class {
+      name: "valcolor";
+      color: 255 0 0 255;
+      color2: 255 255 255 255; // for text
+      color3: 255 255 255 255; // useless here
+   }
+   color_class {
+      name: "satcolor";
+      color: 255 255 255 255;
+      color2: 255 255 255 255;
+      color3: 255 255 255 255;
+   }
+   color_class {
+      name: "finalcolor";
+      color: 255 0 0 255;
+      color2: 255 255 255 255;
+      color3: 255 255 255 255;
+   }
+}
+
+collections {
+   group { 
+      name: "main";
+      parts {
+
+         images {
+            image: "pm_fill.png" COMP;
+            image: "aquaball.png" COMP;
+            image: "spectrum.png" COMP;
+            image: "gr_value.png" COMP;
+            image: "gr_saturation.png" COMP;
+         }
+
+         part {
+            name: "background";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "pm_fill.png";
+               fill { size.relative: 0.0 0.0; size.offset: 64 64; }
+               rel1 { relative: 0.0 0.0; }
+               rel2 { relative: 1.0 1.0; }
+            }
+         }
+
+/************ Hue select ***********/
+
+         part {
+            name: "spectr";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "spectrum.png";
+               rel1 {
+                  to: "drag_area";
+                  relative: 0.4 0.0;
+                  offset: 0 51;
+               }
+               rel2 {
+                  to: "drag_area";
+                  relative: 0.6 1;
+                  offset: 0 -51;
+               }
+            }
+         }         
+
+         part {
+            name: "drag_area";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.025 0.1;
+               }
+               rel2 {
+                  relative: 0.325 0.9;
+               }
+            }
+         }
+
+         part {
+            name: "b_hue";
+            mouse_events: 1;
+            type: IMAGE;
+
+            dragable {
+               confine: "drag_area";
+               x: 0 0 0;
+               y: 1 0 360;
+            }
+            description {
+               state: "default" 0.0;
+               image.normal: "aquaball.png";
+               color: 255 255 255 255;
+
+               min: 100 100;
+               max: 100 100;
+               rel1 {
+                  to: "drag_area";
+               }
+               rel2 {
+                  to: "drag_area";
+               }
+            }
+         }
+
+/************ Value select ***********/
+
+         part {
+            name: "drag_area2";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.350 0.1;
+               }
+               rel2 {
+                  relative: 0.650 0.9;
+               }
+            }
+         }
+
+         part {
+            name: "value";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color_class: "valcolor";
+               rel1 {
+                  to: "drag_area2";
+                  relative: 0.4 0.0;
+                  offset: 0 51;
+               }
+               rel2 {
+                  to: "drag_area2";
+                  relative: 0.6 1;
+                  offset: 0 -51;
+               }
+            }
+         }
+
+         part {
+            name: "intmask";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "gr_value.png";
+               rel1 {
+                  to: "drag_area2";
+                  relative: 0.4 0.0;
+                  offset: 0 51;
+               }
+               rel2 {
+                  to: "drag_area2";
+                  relative: 0.6 1;
+                  offset: 0 -51;
+               }
+            }
+         }
+
+         part {
+            name: "b_val";
+            mouse_events: 1;
+            type: IMAGE;
+
+            dragable {
+               confine: "drag_area2";
+               x: 0 0 0;
+               y: 1 0 100;
+            }
+            description {
+               state: "default" 0.0;
+               image.normal: "aquaball.png";
+               color: 255 255 255 255;
+
+               min: 100 100;
+               max: 100 100;
+               rel1 {
+                  to: "drag_area2";
+               }
+               rel2 {
+                  to: "drag_area2";
+               }
+            }
+         }
+
+/************ Saturation select ***********/
+
+         part {
+            name: "drag_area3";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.675 0.1;
+               }
+               rel2 {
+                  relative: 0.975 0.9;
+               }
+            }
+         }
+
+         part {
+            name: "saturation";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color_class: "basecolor";
+               rel1 {
+                  to: "drag_area3";
+                  relative: 0.4 0.0;
+                  offset: 0 51;
+               }
+               rel2 {
+                  to: "drag_area3";
+                  relative: 0.6 1;
+                  offset: 0 -51;
+               }
+            }
+         }
+
+         part {
+            name: "intmasksat";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "gr_saturation.png";
+               color_class: "satcolor";
+               rel1 {
+                  to: "drag_area3";
+                  relative: 0.4 0.0;
+                  offset: 0 51;
+               }
+               rel2 {
+                  to: "drag_area3";
+                  relative: 0.6 1;
+                  offset: 0 -51;
+               }
+            }
+         }
+
+         part {
+            name: "b_sat";
+            mouse_events: 1;
+            type: IMAGE;
+
+            dragable {
+               confine: "drag_area3";
+               x: 0 0 0;
+               y: 1 0 100;
+            }
+            description {
+               state: "default" 0.0;
+               image.normal: "aquaball.png";
+               color: 255 255 255 255;
+
+               min: 100 100;
+               max: 100 100;
+               rel1 {
+                  to: "drag_area3";
+               }
+               rel2 {
+                  to: "drag_area3";
+               }
+            }
+         }
+
+/************ Final color ************/
+
+         part {
+            name: "finalc";
+            mouse_events: 0;
+            type: RECT;
+            description { 
+               state: "default" 0.0;
+               color_class: "finalcolor";
+               rel1 {
+                  relative: 0.225 0.91;
+               }
+               rel2 {
+                  relative: 0.775 0.97;
+               }
+            }
+         }
+      }
+   }
+}

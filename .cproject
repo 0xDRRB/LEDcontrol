@@ -256,7 +256,17 @@
 							<tool id="org.tizen.nativecore.tool.ast.cpp.714395942" name="C++ Static Analyzer" superClass="org.tizen.nativecore.tool.ast.cpp"/>
 							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.986079156" name="Archive Generator" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib"/>
 							<tool id="org.tizen.nativecore.tool.sbi.po.compiler.80948353" name="PO Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.po.compiler"/>
-							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.322800974" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler"/>
+							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.322800974" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler">
+								<option id="sbi.gnu.edc.compiler.option.misc.id.1277663691" superClass="sbi.gnu.edc.compiler.option.misc.id" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/res/edje/images&quot;"/>
+								</option>
+								<option id="sbi.gnu.edc.compiler.option.misc.sd.198816494" superClass="sbi.gnu.edc.compiler.option.misc.sd" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/res/edje/sounds&quot;"/>
+								</option>
+								<option id="sbi.gnu.edc.compiler.option.misc.fd.1577449949" superClass="sbi.gnu.edc.compiler.option.misc.fd" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/res/edje/fonts&quot;"/>
+								</option>
+							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
