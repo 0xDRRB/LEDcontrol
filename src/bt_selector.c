@@ -25,7 +25,6 @@ static void send_color_bt(appdata_s *ad, int r, int g, int b)
    int ret = 0;
    char message[6] = {0, 0, 0, 0, 0, 59};
 
-   //appdata_s *ad = (appdata_s *) data;
    ret_if(!ad);
 
    _D("Color changed to (RGB): %u %u %u", r, g, b);
@@ -88,7 +87,7 @@ void hsv2rgb(double h, double s, double v, int *r, int *g, int *b)
     return;
 }
 
-static void _on_knob_moved(void *data, Evas_Object *o, const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
+static void _on_knob_moved_cb(void *data, Evas_Object *o, const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
 {
    double hue, val, sat ;
    int r, g, b;
@@ -121,7 +120,7 @@ static void _on_knob_moved(void *data, Evas_Object *o, const char *emission EINA
    // send color by bluetooth here
 }
 
-static void _on_knob_release(void *data, Evas_Object *o, const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
+static void _on_knob_release_cb(void *data, Evas_Object *o, const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
 {
    double hue, val, sat ;
    int r, g, b;
@@ -142,7 +141,7 @@ static void _on_knob_release(void *data, Evas_Object *o, const char *emission EI
    hsv2rgb(hue, sat, val, &r, &g, &b);
 
    // send color by bluetooth here
-   _D(">>>>>> value changed. hsv = %0.3f %0.3f %0.3f    rgb = %u %u %u", hue, sat, val, r, g, b);
+   _D("value changed. hsv = %0.3f %0.3f %0.3f    rgb = %u %u %u", hue, sat, val, r, g, b);
 
    send_color_bt(ad, r, g, b);
 }
@@ -166,17 +165,12 @@ HAPI void bt_selector_layout_create(appdata_s *ad)
 	// adjust hint
 	evas_object_size_hint_weight_set(edje_object, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	// set callbacks fnct on dragables part
-	edje_object_signal_callback_add(edje_object, "mouse,up,*", "b_hue", _on_knob_release, ad);
-	edje_object_signal_callback_add(edje_object, "drag", "b_hue", _on_knob_moved, ad);
-	edje_object_signal_callback_add(edje_object, "mouse,up,*", "b_sat", _on_knob_release, ad);
-	edje_object_signal_callback_add(edje_object, "drag", "b_sat", _on_knob_moved, ad);
-	edje_object_signal_callback_add(edje_object, "mouse,up,*", "b_val", _on_knob_release, ad);
-	edje_object_signal_callback_add(edje_object, "drag", "b_val", _on_knob_moved, ad);
-	//elm_naviframe_item_simple_push(ad->naviframe, edje_object);
+	edje_object_signal_callback_add(edje_object, "mouse,up,*", "b_*", _on_knob_release_cb, ad);
+	edje_object_signal_callback_add(edje_object, "drag", "b_*", _on_knob_moved_cb, ad);
 
 	// push objet on the naviframe stack
 	elm_naviframe_item_push(ad->navi, "Choose color", NULL, NULL, edje_object, NULL);
 
-	// TODO
+	// TODO (request/response handling for getting defined/FX color from Arduino)
 	bt_socket_set_data_received_cb(_socket_data_received_cb, NULL);
 }
