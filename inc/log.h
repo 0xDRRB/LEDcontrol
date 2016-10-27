@@ -7,21 +7,38 @@
 #undef LOG_TAG
 #define LOG_TAG "LEDcontrol"
 
+#ifdef TIZEN_DEBUG_ENABLE
+
 #if !defined(_D)
 #define _D(fmt, arg...) dlog_print(DLOG_DEBUG, LOG_TAG, fmt"\n", ##arg)
 #endif
-
 #if !defined(_I)
 #define _I(fmt, arg...) dlog_print(DLOG_INFO, LOG_TAG, fmt"\n", ##arg)
 #endif
-
 #if !defined(_W)
 #define _W(fmt, arg...) dlog_print(DLOG_WARN, LOG_TAG, fmt"\n", ##arg)
 #endif
-
 #if !defined(_E)
 #define _E(fmt, arg...) dlog_print(DLOG_ERROR, LOG_TAG, fmt"\n", ##arg)
 #endif
+
+#else // TIZEN_DEBUG_ENABLE
+
+#if !defined(_D)
+#define _D(fmt, arg...) do {} while (0)
+#endif
+#if !defined(_E)
+#define _I(fmt, arg...) do {} while (0)
+#endif
+#if !defined(_E)
+#define _W(fmt, arg...) do {} while (0)
+#endif
+#if !defined(_E)
+#define _E(fmt, arg...) do {} while (0)
+#endif
+
+#endif // TIZEN_DEBUG_ENABLE
+
 
 #define retvm_if(expr, val, fmt, arg...) do { \
 	if(expr) { \

@@ -224,6 +224,9 @@
 								<option id="sbi.gnu.c.compiler.option.frameworks.core.2030971632" name="Tizen-Frameworks" superClass="sbi.gnu.c.compiler.option.frameworks.core" valueType="userObjs">
 									<listOptionValue builtIn="false" value="Native_API"/>
 								</option>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.168037408" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="TIZEN_DEBUG_ENABLE=1"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.768387463" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.938519670" name="C Linker" superClass="org.tizen.nativeide.tool.sbi.gnu.c.linker.base"/>
@@ -535,13 +538,13 @@
 							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.2130995588" name="Archive Generator" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib"/>
 							<tool id="org.tizen.nativecore.tool.sbi.po.compiler.1593329950" name="PO Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.po.compiler"/>
 							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.1273947273" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler">
-								<option id="sbi.gnu.edc.compiler.option.misc.id.1951073195" superClass="sbi.gnu.edc.compiler.option.misc.id" valueType="stringList">
+								<option id="sbi.gnu.edc.compiler.option.misc.id.1951073195" name="Image Path (-id)" superClass="sbi.gnu.edc.compiler.option.misc.id" valueType="stringList">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/res/edje/images&quot;"/>
 								</option>
-								<option id="sbi.gnu.edc.compiler.option.misc.sd.761303024" superClass="sbi.gnu.edc.compiler.option.misc.sd" valueType="stringList">
+								<option id="sbi.gnu.edc.compiler.option.misc.sd.761303024" name="Sound Path (-sd)" superClass="sbi.gnu.edc.compiler.option.misc.sd" valueType="stringList">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/res/edje/sounds&quot;"/>
 								</option>
-								<option id="sbi.gnu.edc.compiler.option.misc.fd.1022756373" superClass="sbi.gnu.edc.compiler.option.misc.fd" valueType="stringList">
+								<option id="sbi.gnu.edc.compiler.option.misc.fd.1022756373" name="Font Path (-fd)" superClass="sbi.gnu.edc.compiler.option.misc.fd" valueType="stringList">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/res/edje/fonts&quot;"/>
 								</option>
 							</tool>
