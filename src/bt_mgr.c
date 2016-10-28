@@ -228,9 +228,6 @@ HAPI void bt_mgr_initialize(void *data)
 
 HAPI void bt_mgr_release(void)
 {
-	bt_adapter_unset_state_changed_cb();
-	bt_adapter_unset_device_discovery_state_changed_cb();
-	bt_device_unset_service_searched_cb();
 	bt_socket_unset_data_received_cb();
 	bt_socket_unset_connection_state_changed_cb();
 	bt_deinitialize();

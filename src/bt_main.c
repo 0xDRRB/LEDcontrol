@@ -265,8 +265,7 @@ static void _app_pause(void *data)
 
 static void _app_resume(void *data)
 {
-	_D("RESUMED AND BT_MGR_RELEASE");
-	bt_mgr_release();
+	_D("RESUMED");
 }
 
 static void _app_terminate(void *data)
