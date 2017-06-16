@@ -256,11 +256,13 @@ static void _layout_menu_cb(void *user_data, Evas_Object *obj, void *event_info)
 	/* box */
 	box = elm_box_add(popup);
 	evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+	elm_box_padding_set(box, 0, 25);
 
 	radio = elm_radio_add(box);
 	elm_object_text_set(radio, items[0]);
 	evas_object_show(radio);
 	elm_box_pack_end(box, radio);
+	evas_object_size_hint_align_set(radio, 0.0, 0.0);
 
 	/* assigning a unique value(within the group) to the radio instance */
 	elm_radio_state_value_set(radio, 0);
@@ -274,6 +276,7 @@ static void _layout_menu_cb(void *user_data, Evas_Object *obj, void *event_info)
 		elm_object_text_set(radio, items[i]);
 		evas_object_show(radio);
 		elm_box_pack_end(box, radio);
+		evas_object_size_hint_align_set(radio, 0.0, 0.0);
 		elm_radio_state_value_set(radio, i);
 		elm_radio_group_add(radio, radio_group);
 		evas_object_smart_callback_add(radio, "changed", radio_changed_cb, ad);
