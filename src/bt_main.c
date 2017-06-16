@@ -189,6 +189,7 @@ static void _create_base_gui(appdata_s *ad)
 	evas_object_size_hint_weight_set(ad->navi, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_object_content_set(ad->conform, ad->navi);
 	evas_object_show(ad->navi);
+	/* Register the Back key event callback */
 	eext_object_event_callback_add(ad->navi, EEXT_CALLBACK_BACK, _layout_back_cb, ad);
 
 	/* Base Layout */
