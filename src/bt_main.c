@@ -64,7 +64,7 @@ static void _about_btn_clicked_cb(void *data)
 			"You can get the source code of this native app on:</br>"
 			"<font_size=30><b>https://github.com/Lefinnois/LEDcontrol</b></font_size>"
 			"<br></br>"
-			"<font_size=25>LEDcontrol version 0.0.2, Copyright (C) 2016 Denis Bodor</br>"
+			"<font_size=25>LEDcontrol version 0.0.4, Copyright (C) 2016-2017 Denis Bodor</br>"
     		"LEDcontrol comes with ABSOLUTELY NO WARRANTY; "
     		"This program is free software; you can redistribute it and/or modify "
     		"it under the terms of the GNU General Public License version 2.</font_size>");
